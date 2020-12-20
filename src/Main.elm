@@ -27,7 +27,7 @@ type alias Model =
 
 initialModel : Model
 initialModel =
-    { todos = [ { id = 1, title = "hey", completed = False } ]
+    { todos = []
     , id = 0
     , title = ""
     }
