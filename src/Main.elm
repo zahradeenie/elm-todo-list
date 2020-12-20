@@ -75,11 +75,9 @@ update msg model =
 
 view : Model -> Html Msg
 view model =
-    div []
-        [ div []
-            [ viewAddTodoInput model.title
-            , viewTodoList model.todos
-            ]
+    div [ class "container" ]
+        [ viewAddTodoInput model.title
+        , viewTodoList model.todos
         ]
 
 
