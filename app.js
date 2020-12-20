@@ -5648,14 +5648,10 @@ var author$project$Main$viewTodoList = function (todos) {
 	var todoList = A2(elm$core$List$map, author$project$Main$viewTodoItem, todos);
 	return A2(elm$html$Html$ul, _List_Nil, todoList);
 };
-var elm$html$Html$Attributes$class = elm$html$Html$Attributes$stringProperty('className');
 var author$project$Main$view = function (model) {
 	return A2(
 		elm$html$Html$div,
-		_List_fromArray(
-			[
-				elm$html$Html$Attributes$class('container')
-			]),
+		_List_Nil,
 		_List_fromArray(
 			[
 				author$project$Main$viewAddTodoInput(model.title),
@@ -7399,6 +7395,7 @@ var elm$browser$Debugger$Main$viewExpando = F3(
 var elm$browser$Debugger$History$idForMessageIndex = function (index) {
 	return 'msg-' + elm$core$String$fromInt(index);
 };
+var elm$html$Html$Attributes$class = elm$html$Html$Attributes$stringProperty('className');
 var elm$html$Html$Attributes$title = elm$html$Html$Attributes$stringProperty('title');
 var elm$browser$Debugger$History$viewMessage = F3(
 	function (currentIndex, index, msg) {
