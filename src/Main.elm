@@ -1,9 +1,10 @@
 module Main exposing (..)
 
 import Browser exposing (sandbox)
+import Debug
 import Html exposing (..)
 import Html.Attributes exposing (..)
-import Html.Events exposing (onClick)
+import Html.Events exposing (onClick, onInput)
 
 
 
@@ -26,7 +27,7 @@ type alias Model =
 
 initialModel : Model
 initialModel =
-    { todos = []
+    { todos = [ { id = 1, title = "hey", completed = False } ]
     , id = 0
     , title = ""
     }
@@ -46,6 +47,7 @@ newTodoItem title id =
 
 type Msg
     = AddTodoItem
+    | UpdateTitle String
 
 
 update : Msg -> Model -> Model
@@ -63,6 +65,9 @@ update msg model =
                         model.todos ++ [ newTodoItem model.title model.id ]
             }
 
+        UpdateTitle value ->
+            { model | title = value }
+
 
 
 -- VIEW
@@ -72,16 +77,21 @@ view : Model -> Html Msg
 view model =
     div []
         [ div []
-            [ viewAddTodoInput
+            [ viewAddTodoInput model.title
             , viewTodoList model.todos
             ]
         ]
 
 
-viewAddTodoInput : Html Msg
-viewAddTodoInput =
+viewAddTodoInput : String -> Html Msg
+viewAddTodoInput title =
     div []
-        [ input [ placeholder "title" ] []
+        [ input
+            [ value title
+            , onInput UpdateTitle
+            , placeholder "title"
+            ]
+            []
         , button [ onClick AddTodoItem ] [ text "add item" ]
         ]
 
