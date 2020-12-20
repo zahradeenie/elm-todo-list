@@ -1,8 +1,8 @@
 module Main exposing (..)
 
 import Browser exposing (sandbox)
-import Html as H
-import Html.Attributes as HA
+import Html exposing (..)
+import Html.Attributes exposing (..)
 import Html.Events exposing (onClick)
 
 
@@ -10,13 +10,34 @@ import Html.Events exposing (onClick)
 -- MODEL
 
 
+type alias Todo =
+    { id : Int
+    , title : String
+    , completed : Bool
+    }
+
+
 type alias Model =
-    Int
+    { todos : List Todo
+    , id : Int
+    , title : String
+    }
 
 
-init : Model
-init =
-    0
+initialModel : Model
+initialModel =
+    { todos = []
+    , id = 0
+    , title = ""
+    }
+
+
+newTodoItem : String -> Int -> Todo
+newTodoItem title id =
+    { title = title
+    , id = id
+    , completed = Basics.False
+    }
 
 
 
@@ -24,31 +45,64 @@ init =
 
 
 type Msg
-    = Increment
-    | Decrement
+    = AddTodoItem
 
 
 update : Msg -> Model -> Model
 update msg model =
     case msg of
-        Increment ->
-            model + 1
+        AddTodoItem ->
+            { model
+                | id = model.id + 1
+                , title = ""
+                , todos =
+                    if String.isEmpty model.title then
+                        model.todos
 
-        Decrement ->
-            model - 1
+                    else
+                        model.todos ++ [ newTodoItem model.title model.id ]
+            }
 
 
 
 -- VIEW
 
 
-view : Model -> H.Html Msg
+view : Model -> Html Msg
 view model =
-    H.div []
-        [ H.button [ onClick Decrement ] [ H.text "-" ]
-        , H.div [] [ H.text (String.fromInt model) ]
-        , H.button [ onClick Increment ] [ H.text "+" ]
+    div []
+        [ div []
+            [ viewAddTodoInput
+            , viewTodoList model.todos
+            ]
         ]
+
+
+viewAddTodoInput : Html Msg
+viewAddTodoInput =
+    div []
+        [ input [ placeholder "title" ] []
+        , button [ onClick AddTodoItem ] [ text "add item" ]
+        ]
+
+
+
+-- VIEW TODOS
+
+
+viewTodoList : List Todo -> Html Msg
+viewTodoList todos =
+    let
+        todoList =
+            List.map viewTodoItem todos
+    in
+    ul [] todoList
+
+
+viewTodoItem : Todo -> Html Msg
+viewTodoItem todo =
+    li []
+        [ span [] [ text todo.title ] ]
 
 
 
@@ -57,4 +111,4 @@ view model =
 
 main : Program () Model Msg
 main =
-    Browser.sandbox { init = init, update = update, view = view }
+    Browser.sandbox { init = initialModel, update = update, view = view }
