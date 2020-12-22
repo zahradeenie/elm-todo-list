@@ -37,7 +37,7 @@ newTodoItem : String -> Int -> Todo
 newTodoItem title id =
     { title = title
     , id = id
-    , completed = Basics.False
+    , completed = False
     }
 
 
