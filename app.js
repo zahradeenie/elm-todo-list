@@ -4938,6 +4938,7 @@ function _Browser_load(url)
 		}
 	}));
 }
+var elm$core$Basics$False = {$: 'False'};
 var elm$core$Basics$EQ = {$: 'EQ'};
 var elm$core$Basics$LT = {$: 'LT'};
 var elm$core$Elm$JsArray$foldr = _JsArray_foldr;
@@ -5018,8 +5019,14 @@ var elm$core$Set$toList = function (_n0) {
 	var dict = _n0.a;
 	return elm$core$Dict$keys(dict);
 };
-var author$project$Main$initialModel = {id: 0, title: '', todos: _List_Nil};
-var elm$core$Basics$False = {$: 'False'};
+var author$project$Main$initialModel = {
+	id: 0,
+	title: '',
+	todos: _List_fromArray(
+		[
+			{completed: false, id: 1, title: 'todo thing'}
+		])
+};
 var author$project$Main$newTodoItem = F2(
 	function (title, id) {
 		return {completed: false, id: id, title: title};
@@ -5643,15 +5650,47 @@ var elm$html$Html$span = _VirtualDom_node('span');
 var author$project$Main$viewTodoItem = function (todo) {
 	return A2(
 		elm$html$Html$li,
-		_List_Nil,
+		_List_fromArray(
+			[
+				elm$html$Html$Attributes$class('todo-item')
+			]),
 		_List_fromArray(
 			[
 				A2(
 				elm$html$Html$span,
-				_List_Nil,
+				_List_fromArray(
+					[
+						elm$html$Html$Attributes$class('todo-item-title')
+					]),
 				_List_fromArray(
 					[
 						elm$html$Html$text(todo.title)
+					])),
+				A2(
+				elm$html$Html$div,
+				_List_Nil,
+				_List_fromArray(
+					[
+						A2(
+						elm$html$Html$button,
+						_List_fromArray(
+							[
+								elm$html$Html$Attributes$class('todo-item-button')
+							]),
+						_List_fromArray(
+							[
+								elm$html$Html$text('edit')
+							])),
+						A2(
+						elm$html$Html$button,
+						_List_fromArray(
+							[
+								elm$html$Html$Attributes$class('todo-item-button')
+							]),
+						_List_fromArray(
+							[
+								elm$html$Html$text('delete')
+							]))
 					]))
 			]));
 };
@@ -5690,7 +5729,13 @@ var author$project$Main$viewTodoList = function (todos) {
 					[
 						elm$html$Html$text('Things to do')
 					])),
-				A2(elm$html$Html$ul, _List_Nil, todoList)
+				A2(
+				elm$html$Html$ul,
+				_List_fromArray(
+					[
+						elm$html$Html$Attributes$class('todo-item-group')
+					]),
+				todoList)
 			]));
 };
 var author$project$Main$view = function (model) {

@@ -31,7 +31,7 @@
 .item-group .item-input {
   border: 1px solid black;
   border-radius: 3px;
-  padding: 5px 3px;
+  padding: 7px 3px;
   margin-right: 10px;
   width: 80%;
 }
@@ -47,6 +47,31 @@
   font-size: 1.1em;
 }
 
-.item-button:hover {
+button:hover {
   cursor: pointer;
 }
+
+.todo-item-group {
+
+}
+
+.todo-item-group .todo-item {
+  padding: 1rem 0rem;
+  background-color: red;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+
+.todo-item .todo-item-title {
+  font-size: 0.9em;
+}
+
+.todo-item .todo-item-button {
+  border: 1px solid black;
+  border-radius: 3px;
+  padding: 5px 10px;
+  margin-left: 0.5rem;
+}
+

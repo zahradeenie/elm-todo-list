@@ -27,7 +27,7 @@ type alias Model =
 
 initialModel : Model
 initialModel =
-    { todos = []
+    { todos = [{ id = 1, title = "todo thing", completed = False}]
     , id = 0
     , title = ""
     }
@@ -113,15 +113,23 @@ viewTodoList todos =
     in
     div [ class "item-group" ]
         [ div [ class "item-title" ] [ text "Things to do" ]
-        , ul [ ] todoList
+        , ul [ class "todo-item-group" ] todoList
         ]
     
 
 
 viewTodoItem : Todo -> Html Msg
 viewTodoItem todo =
-    li []
-        [ span [] [ text todo.title ] ]
+    li [ class "todo-item" ]
+        [ span [ class "todo-item-title" ]
+            [ text todo.title ]
+        , div []
+            [ button [ class "todo-item-button" ]
+                [ text "edit"]
+            , button [ class "todo-item-button" ]
+                [ text "delete"]
+            ]
+        ]
 
 
 
