@@ -5478,6 +5478,7 @@ var elm$html$Html$Attributes$stringProperty = F2(
 			key,
 			elm$json$Json$Encode$string(string));
 	});
+var elm$html$Html$Attributes$class = elm$html$Html$Attributes$stringProperty('className');
 var elm$html$Html$Attributes$placeholder = elm$html$Html$Attributes$stringProperty('placeholder');
 var elm$html$Html$Attributes$value = elm$html$Html$Attributes$stringProperty('value');
 var elm$virtual_dom$VirtualDom$Normal = function (a) {
@@ -5588,23 +5589,38 @@ var elm$html$Html$Events$onInput = function (tagger) {
 var author$project$Main$viewAddTodoInput = function (title) {
 	return A2(
 		elm$html$Html$div,
-		_List_Nil,
 		_List_fromArray(
 			[
+				elm$html$Html$Attributes$class('item-group')
+			]),
+		_List_fromArray(
+			[
+				A2(
+				elm$html$Html$div,
+				_List_fromArray(
+					[
+						elm$html$Html$Attributes$class('item-title')
+					]),
+				_List_fromArray(
+					[
+						elm$html$Html$text('Add a todo item')
+					])),
 				A2(
 				elm$html$Html$input,
 				_List_fromArray(
 					[
 						elm$html$Html$Attributes$value(title),
 						elm$html$Html$Events$onInput(author$project$Main$UpdateTitle),
-						elm$html$Html$Attributes$placeholder('title')
+						elm$html$Html$Attributes$placeholder('Build more apps in Elm'),
+						elm$html$Html$Attributes$class('item-input')
 					]),
 				_List_Nil),
 				A2(
 				elm$html$Html$button,
 				_List_fromArray(
 					[
-						elm$html$Html$Events$onClick(author$project$Main$AddTodoItem)
+						elm$html$Html$Events$onClick(author$project$Main$AddTodoItem),
+						elm$html$Html$Attributes$class('item-button')
 					]),
 				_List_fromArray(
 					[
@@ -5612,6 +5628,16 @@ var author$project$Main$viewAddTodoInput = function (title) {
 					]))
 			]));
 };
+var author$project$Main$viewHero = A2(
+	elm$html$Html$div,
+	_List_fromArray(
+		[
+			elm$html$Html$Attributes$class('hero')
+		]),
+	_List_fromArray(
+		[
+			elm$html$Html$text('A Todo List Built In Elm')
+		]));
 var elm$html$Html$li = _VirtualDom_node('li');
 var elm$html$Html$span = _VirtualDom_node('span');
 var author$project$Main$viewTodoItem = function (todo) {
@@ -5646,14 +5672,37 @@ var elm$core$List$map = F2(
 var elm$html$Html$ul = _VirtualDom_node('ul');
 var author$project$Main$viewTodoList = function (todos) {
 	var todoList = A2(elm$core$List$map, author$project$Main$viewTodoItem, todos);
-	return A2(elm$html$Html$ul, _List_Nil, todoList);
+	return A2(
+		elm$html$Html$div,
+		_List_fromArray(
+			[
+				elm$html$Html$Attributes$class('item-group')
+			]),
+		_List_fromArray(
+			[
+				A2(
+				elm$html$Html$div,
+				_List_fromArray(
+					[
+						elm$html$Html$Attributes$class('item-title')
+					]),
+				_List_fromArray(
+					[
+						elm$html$Html$text('Things to do')
+					])),
+				A2(elm$html$Html$ul, _List_Nil, todoList)
+			]));
 };
 var author$project$Main$view = function (model) {
 	return A2(
 		elm$html$Html$div,
-		_List_Nil,
 		_List_fromArray(
 			[
+				elm$html$Html$Attributes$class('container')
+			]),
+		_List_fromArray(
+			[
+				author$project$Main$viewHero,
 				author$project$Main$viewAddTodoInput(model.title),
 				author$project$Main$viewTodoList(model.todos)
 			]));
@@ -7395,7 +7444,6 @@ var elm$browser$Debugger$Main$viewExpando = F3(
 var elm$browser$Debugger$History$idForMessageIndex = function (index) {
 	return 'msg-' + elm$core$String$fromInt(index);
 };
-var elm$html$Html$Attributes$class = elm$html$Html$Attributes$stringProperty('className');
 var elm$html$Html$Attributes$title = elm$html$Html$Attributes$stringProperty('title');
 var elm$browser$Debugger$History$viewMessage = F3(
 	function (currentIndex, index, msg) {

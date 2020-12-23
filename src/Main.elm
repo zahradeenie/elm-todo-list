@@ -76,21 +76,28 @@ update msg model =
 view : Model -> Html Msg
 view model =
     div [ class "container" ]
-        [ viewAddTodoInput model.title
+        [ viewHero
+        , viewAddTodoInput model.title
         , viewTodoList model.todos
         ]
 
 
+viewHero : Html Msg
+viewHero =
+    div [ class "hero" ] [ text "A Todo List Built In Elm" ]
+
 viewAddTodoInput : String -> Html Msg
 viewAddTodoInput title =
-    div []
-        [ input
-            [ value title
-            , onInput UpdateTitle
-            , placeholder "title"
-            ]
-            []
-        , button [ onClick AddTodoItem ] [ text "add item" ]
+    div [ class "item-group" ]
+        [ div [ class "item-title" ] [ text "Add a todo item"]
+        , input
+          [ value title
+          , onInput UpdateTitle
+          , placeholder "Build more apps in Elm"
+          , class "item-input"
+          ]
+          []
+        , button [ onClick AddTodoItem, class "item-button" ] [ text "add item" ]
         ]
 
 
@@ -104,7 +111,11 @@ viewTodoList todos =
         todoList =
             List.map viewTodoItem todos
     in
-    ul [] todoList
+    div [ class "item-group" ]
+        [ div [ class "item-title" ] [ text "Things to do" ]
+        , ul [ ] todoList
+        ]
+    
 
 
 viewTodoItem : Todo -> Html Msg

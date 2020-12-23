@@ -2,9 +2,51 @@
   box-sizing: border-box;
   padding: 0;
   margin: 0;
+  font-family: 'Helvetica';
+  font-size: 20px;
 }
 
 .container {
-  width: 100%;
+  width: 70%;
   background-color: lemonchiffon;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+.container .hero {
+  font-size: 1.6em;
+  text-align: center;
+  padding: 1rem;
+}
+
+.container ul li {
+  list-style: none;
+}
+
+.container .item-group {
+  padding: 1rem;
+  /* background: red; */
+}
+
+.item-group .item-input {
+  border: 1px solid black;
+  border-radius: 3px;
+  padding: 5px 3px;
+  margin-right: 10px;
+  width: 80%;
+}
+
+.item-group .item-button {
+  border: 1px solid black;
+  border-radius: 3px;
+  padding: 5px 10px;
+}
+
+.item-group .item-title {
+  margin-bottom: 15px;
+  font-size: 1.1em;
+}
+
+.item-button:hover {
+  cursor: pointer;
 }
