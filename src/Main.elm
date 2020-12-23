@@ -2,6 +2,7 @@ module Main exposing (..)
 
 import Browser exposing (sandbox)
 import Debug
+import Dict
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick, onInput)
@@ -46,7 +47,25 @@ deleteTodo todos id =
     List.filter (\x -> x.id /= id) todos
 
 
+completeTodoItem : List Todo -> Int -> List Todo
+completeTodoItem todos id =
+    List.map
+        (\todo ->
+            if todo.id == id then
+                { todo | completed = not todo.completed }
 
+            else
+                todo
+        )
+        todos
+
+
+
+-- (a -> b) -> List a -> List b
+-- getTodoTitle :  : List Todo -> Int -> String
+-- getTodoTitle todos id =
+--     todos
+--         |> List.filter (\x -> x.id == id)
 -- UPDATE
 
 
@@ -54,6 +73,11 @@ type Msg
     = AddTodoItem
     | UpdateTitle String
     | DeleteTodoItem Int
+    | CompleteTodoItem Int
+
+
+
+-- | EditTodoItem Int
 
 
 update : Msg -> Model -> Model
@@ -77,8 +101,13 @@ update msg model =
         DeleteTodoItem id ->
             { model | todos = deleteTodo model.todos id }
 
+        CompleteTodoItem id ->
+            { model | todos = completeTodoItem model.todos id }
 
 
+
+-- EditTodoItem id ->
+--     { model | title = getTodoTitle model.todos id }
 -- VIEW
 
 
@@ -88,6 +117,7 @@ view model =
         [ viewHero
         , viewAddTodoInput model.title
         , viewTodoList model.todos
+        , viewCompletedTodoList model.todos
         ]
 
 
@@ -129,19 +159,62 @@ viewTodoList todos =
 
 viewTodoItem : Todo -> Html Msg
 viewTodoItem todo =
-    li [ class "todo-item" ]
-        [ span [ class "todo-item-title" ]
-            [ text todo.title ]
-        , div []
-            [ button [ class "todo-item-button" ]
-                [ text "edit" ]
-            , button
-                [ class "todo-item-button"
-                , onClick (DeleteTodoItem todo.id)
+    if todo.completed == False then
+        li [ class "todo-item" ]
+            [ span [ class "todo-item-title" ]
+                [ text todo.title ]
+            , div []
+                [ button
+                    [ class "todo-item-button"
+
+                    -- , onClick (EditTodoItem todo.id)
+                    ]
+                    [ text "edit" ]
+                , button
+                    [ class "todo-item-button"
+                    , onClick (DeleteTodoItem todo.id)
+                    ]
+                    [ text "delete" ]
+                , button
+                    [ class "todo-item-button"
+                    , onClick (CompleteTodoItem todo.id)
+                    ]
+                    [ text "complete" ]
                 ]
-                [ text "delete" ]
             ]
+
+    else
+        text ""
+
+
+viewCompletedTodoList : List Todo -> Html Msg
+viewCompletedTodoList todos =
+    let
+        todoList =
+            List.map viewCompletedTodos todos
+    in
+    div [ class "item-group" ]
+        [ div [ class "item-title" ] [ text "Completed items" ]
+        , ul [ class "todo-item-group" ] todoList
         ]
+
+
+viewCompletedTodos todo =
+    if todo.completed == True then
+        li [ class "todo-item" ]
+            [ span [ class "todo-item-title" ]
+                [ text todo.title ]
+            , div []
+                [ button
+                    [ class "todo-item-button"
+                    , onClick (DeleteTodoItem todo.id)
+                    ]
+                    [ text "delete" ]
+                ]
+            ]
+
+    else
+        text ""
 
 
 

@@ -5027,7 +5027,8 @@ var author$project$Main$initialModel = {
 			{completed: false, id: 1, title: 'todo thing'}
 		])
 };
-var elm$core$Basics$neq = _Utils_notEqual;
+var elm$core$Basics$eq = _Utils_equal;
+var elm$core$Basics$not = _Basics_not;
 var elm$core$Basics$add = _Basics_add;
 var elm$core$Basics$gt = _Utils_gt;
 var elm$core$List$foldl = F3(
@@ -5107,6 +5108,32 @@ var elm$core$List$foldr = F3(
 	function (fn, acc, ls) {
 		return A4(elm$core$List$foldrHelper, fn, acc, 0, ls);
 	});
+var elm$core$List$map = F2(
+	function (f, xs) {
+		return A3(
+			elm$core$List$foldr,
+			F2(
+				function (x, acc) {
+					return A2(
+						elm$core$List$cons,
+						f(x),
+						acc);
+				}),
+			_List_Nil,
+			xs);
+	});
+var author$project$Main$completeTodoItem = F2(
+	function (todos, id) {
+		return A2(
+			elm$core$List$map,
+			function (todo) {
+				return _Utils_eq(todo.id, id) ? _Utils_update(
+					todo,
+					{completed: !todo.completed}) : todo;
+			},
+			todos);
+	});
+var elm$core$Basics$neq = _Utils_notEqual;
 var elm$core$List$filter = F2(
 	function (isGood, list) {
 		return A3(
@@ -5132,7 +5159,6 @@ var author$project$Main$newTodoItem = F2(
 		return {completed: false, id: id, title: title};
 	});
 var elm$core$Basics$append = _Utils_append;
-var elm$core$Basics$eq = _Utils_equal;
 var elm$core$String$isEmpty = function (string) {
 	return string === '';
 };
@@ -5157,12 +5183,19 @@ var author$project$Main$update = F2(
 				return _Utils_update(
 					model,
 					{title: value});
-			default:
+			case 'DeleteTodoItem':
 				var id = msg.a;
 				return _Utils_update(
 					model,
 					{
 						todos: A2(author$project$Main$deleteTodo, model.todos, id)
+					});
+			default:
+				var id = msg.a;
+				return _Utils_update(
+					model,
+					{
+						todos: A2(author$project$Main$completeTodoItem, model.todos, id)
 					});
 		}
 	});
@@ -5664,6 +5697,80 @@ var author$project$Main$viewAddTodoInput = function (title) {
 					]))
 			]));
 };
+var author$project$Main$DeleteTodoItem = function (a) {
+	return {$: 'DeleteTodoItem', a: a};
+};
+var elm$html$Html$li = _VirtualDom_node('li');
+var elm$html$Html$span = _VirtualDom_node('span');
+var author$project$Main$viewCompletedTodos = function (todo) {
+	return todo.completed ? A2(
+		elm$html$Html$li,
+		_List_fromArray(
+			[
+				elm$html$Html$Attributes$class('todo-item')
+			]),
+		_List_fromArray(
+			[
+				A2(
+				elm$html$Html$span,
+				_List_fromArray(
+					[
+						elm$html$Html$Attributes$class('todo-item-title')
+					]),
+				_List_fromArray(
+					[
+						elm$html$Html$text(todo.title)
+					])),
+				A2(
+				elm$html$Html$div,
+				_List_Nil,
+				_List_fromArray(
+					[
+						A2(
+						elm$html$Html$button,
+						_List_fromArray(
+							[
+								elm$html$Html$Attributes$class('todo-item-button'),
+								elm$html$Html$Events$onClick(
+								author$project$Main$DeleteTodoItem(todo.id))
+							]),
+						_List_fromArray(
+							[
+								elm$html$Html$text('delete')
+							]))
+					]))
+			])) : elm$html$Html$text('');
+};
+var elm$html$Html$ul = _VirtualDom_node('ul');
+var author$project$Main$viewCompletedTodoList = function (todos) {
+	var todoList = A2(elm$core$List$map, author$project$Main$viewCompletedTodos, todos);
+	return A2(
+		elm$html$Html$div,
+		_List_fromArray(
+			[
+				elm$html$Html$Attributes$class('item-group')
+			]),
+		_List_fromArray(
+			[
+				A2(
+				elm$html$Html$div,
+				_List_fromArray(
+					[
+						elm$html$Html$Attributes$class('item-title')
+					]),
+				_List_fromArray(
+					[
+						elm$html$Html$text('Completed items')
+					])),
+				A2(
+				elm$html$Html$ul,
+				_List_fromArray(
+					[
+						elm$html$Html$Attributes$class('todo-item-group')
+					]),
+				todoList)
+			]));
+};
 var author$project$Main$viewHero = A2(
 	elm$html$Html$div,
 	_List_fromArray(
@@ -5674,13 +5781,11 @@ var author$project$Main$viewHero = A2(
 		[
 			elm$html$Html$text('A Todo List Built In Elm')
 		]));
-var author$project$Main$DeleteTodoItem = function (a) {
-	return {$: 'DeleteTodoItem', a: a};
+var author$project$Main$CompleteTodoItem = function (a) {
+	return {$: 'CompleteTodoItem', a: a};
 };
-var elm$html$Html$li = _VirtualDom_node('li');
-var elm$html$Html$span = _VirtualDom_node('span');
 var author$project$Main$viewTodoItem = function (todo) {
-	return A2(
+	return (!todo.completed) ? A2(
 		elm$html$Html$li,
 		_List_fromArray(
 			[
@@ -5724,25 +5829,22 @@ var author$project$Main$viewTodoItem = function (todo) {
 						_List_fromArray(
 							[
 								elm$html$Html$text('delete')
+							])),
+						A2(
+						elm$html$Html$button,
+						_List_fromArray(
+							[
+								elm$html$Html$Attributes$class('todo-item-button'),
+								elm$html$Html$Events$onClick(
+								author$project$Main$CompleteTodoItem(todo.id))
+							]),
+						_List_fromArray(
+							[
+								elm$html$Html$text('complete')
 							]))
 					]))
-			]));
+			])) : elm$html$Html$text('');
 };
-var elm$core$List$map = F2(
-	function (f, xs) {
-		return A3(
-			elm$core$List$foldr,
-			F2(
-				function (x, acc) {
-					return A2(
-						elm$core$List$cons,
-						f(x),
-						acc);
-				}),
-			_List_Nil,
-			xs);
-	});
-var elm$html$Html$ul = _VirtualDom_node('ul');
 var author$project$Main$viewTodoList = function (todos) {
 	var todoList = A2(elm$core$List$map, author$project$Main$viewTodoItem, todos);
 	return A2(
@@ -5783,7 +5885,8 @@ var author$project$Main$view = function (model) {
 			[
 				author$project$Main$viewHero,
 				author$project$Main$viewAddTodoInput(model.title),
-				author$project$Main$viewTodoList(model.todos)
+				author$project$Main$viewTodoList(model.todos),
+				author$project$Main$viewCompletedTodoList(model.todos)
 			]));
 };
 var elm$core$Platform$Cmd$batch = _Platform_batch;
@@ -9039,7 +9142,6 @@ var elm$browser$Debugger$Expando$updateIndex = F3(
 				A3(elm$browser$Debugger$Expando$updateIndex, n - 1, func, xs));
 		}
 	});
-var elm$core$Basics$not = _Basics_not;
 var elm$core$Dict$getMin = function (dict) {
 	getMin:
 	while (true) {
@@ -10772,4 +10874,4 @@ var elm$browser$Browser$sandbox = function (impl) {
 var author$project$Main$main = elm$browser$Browser$sandbox(
 	{init: author$project$Main$initialModel, update: author$project$Main$update, view: author$project$Main$view});
 _Platform_export({'Main':{'init':author$project$Main$main(
-	elm$json$Json$Decode$succeed(_Utils_Tuple0))({"versions":{"elm":"0.19.0"},"types":{"message":"Main.Msg","aliases":{},"unions":{"Main.Msg":{"args":[],"tags":{"AddTodoItem":[],"UpdateTitle":["String.String"],"DeleteTodoItem":["Basics.Int"]}},"Basics.Int":{"args":[],"tags":{"Int":[]}},"String.String":{"args":[],"tags":{"String":[]}}}}})}});}(this));
+	elm$json$Json$Decode$succeed(_Utils_Tuple0))({"versions":{"elm":"0.19.0"},"types":{"message":"Main.Msg","aliases":{},"unions":{"Main.Msg":{"args":[],"tags":{"AddTodoItem":[],"UpdateTitle":["String.String"],"DeleteTodoItem":["Basics.Int"],"CompleteTodoItem":["Basics.Int"]}},"Basics.Int":{"args":[],"tags":{"Int":[]}},"String.String":{"args":[],"tags":{"String":[]}}}}})}});}(this));
