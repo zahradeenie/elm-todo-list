@@ -5027,11 +5027,110 @@ var author$project$Main$initialModel = {
 			{completed: false, id: 1, title: 'todo thing'}
 		])
 };
+var elm$core$Basics$neq = _Utils_notEqual;
+var elm$core$Basics$add = _Basics_add;
+var elm$core$Basics$gt = _Utils_gt;
+var elm$core$List$foldl = F3(
+	function (func, acc, list) {
+		foldl:
+		while (true) {
+			if (!list.b) {
+				return acc;
+			} else {
+				var x = list.a;
+				var xs = list.b;
+				var $temp$func = func,
+					$temp$acc = A2(func, x, acc),
+					$temp$list = xs;
+				func = $temp$func;
+				acc = $temp$acc;
+				list = $temp$list;
+				continue foldl;
+			}
+		}
+	});
+var elm$core$List$reverse = function (list) {
+	return A3(elm$core$List$foldl, elm$core$List$cons, _List_Nil, list);
+};
+var elm$core$List$foldrHelper = F4(
+	function (fn, acc, ctr, ls) {
+		if (!ls.b) {
+			return acc;
+		} else {
+			var a = ls.a;
+			var r1 = ls.b;
+			if (!r1.b) {
+				return A2(fn, a, acc);
+			} else {
+				var b = r1.a;
+				var r2 = r1.b;
+				if (!r2.b) {
+					return A2(
+						fn,
+						a,
+						A2(fn, b, acc));
+				} else {
+					var c = r2.a;
+					var r3 = r2.b;
+					if (!r3.b) {
+						return A2(
+							fn,
+							a,
+							A2(
+								fn,
+								b,
+								A2(fn, c, acc)));
+					} else {
+						var d = r3.a;
+						var r4 = r3.b;
+						var res = (ctr > 500) ? A3(
+							elm$core$List$foldl,
+							fn,
+							acc,
+							elm$core$List$reverse(r4)) : A4(elm$core$List$foldrHelper, fn, acc, ctr + 1, r4);
+						return A2(
+							fn,
+							a,
+							A2(
+								fn,
+								b,
+								A2(
+									fn,
+									c,
+									A2(fn, d, res))));
+					}
+				}
+			}
+		}
+	});
+var elm$core$List$foldr = F3(
+	function (fn, acc, ls) {
+		return A4(elm$core$List$foldrHelper, fn, acc, 0, ls);
+	});
+var elm$core$List$filter = F2(
+	function (isGood, list) {
+		return A3(
+			elm$core$List$foldr,
+			F2(
+				function (x, xs) {
+					return isGood(x) ? A2(elm$core$List$cons, x, xs) : xs;
+				}),
+			_List_Nil,
+			list);
+	});
+var author$project$Main$deleteTodo = F2(
+	function (todos, id) {
+		return A2(
+			elm$core$List$filter,
+			function (x) {
+				return !_Utils_eq(x.id, id);
+			},
+			todos);
+	});
 var author$project$Main$newTodoItem = F2(
 	function (title, id) {
 		return {completed: false, id: id, title: title};
 	});
-var elm$core$Basics$add = _Basics_add;
 var elm$core$Basics$append = _Utils_append;
 var elm$core$Basics$eq = _Utils_equal;
 var elm$core$String$isEmpty = function (string) {
@@ -5039,24 +5138,32 @@ var elm$core$String$isEmpty = function (string) {
 };
 var author$project$Main$update = F2(
 	function (msg, model) {
-		if (msg.$ === 'AddTodoItem') {
-			return _Utils_update(
-				model,
-				{
-					id: model.id + 1,
-					title: '',
-					todos: elm$core$String$isEmpty(model.title) ? model.todos : _Utils_ap(
-						model.todos,
-						_List_fromArray(
-							[
-								A2(author$project$Main$newTodoItem, model.title, model.id)
-							]))
-				});
-		} else {
-			var value = msg.a;
-			return _Utils_update(
-				model,
-				{title: value});
+		switch (msg.$) {
+			case 'AddTodoItem':
+				return _Utils_update(
+					model,
+					{
+						id: model.id + 1,
+						title: '',
+						todos: elm$core$String$isEmpty(model.title) ? model.todos : _Utils_ap(
+							model.todos,
+							_List_fromArray(
+								[
+									A2(author$project$Main$newTodoItem, model.title, model.id)
+								]))
+					});
+			case 'UpdateTitle':
+				var value = msg.a;
+				return _Utils_update(
+					model,
+					{title: value});
+			default:
+				var id = msg.a;
+				return _Utils_update(
+					model,
+					{
+						todos: A2(author$project$Main$deleteTodo, model.todos, id)
+					});
 		}
 	});
 var author$project$Main$AddTodoItem = {$: 'AddTodoItem'};
@@ -5097,28 +5204,6 @@ var elm$core$Array$SubTree = function (a) {
 	return {$: 'SubTree', a: a};
 };
 var elm$core$Elm$JsArray$initializeFromList = _JsArray_initializeFromList;
-var elm$core$List$foldl = F3(
-	function (func, acc, list) {
-		foldl:
-		while (true) {
-			if (!list.b) {
-				return acc;
-			} else {
-				var x = list.a;
-				var xs = list.b;
-				var $temp$func = func,
-					$temp$acc = A2(func, x, acc),
-					$temp$list = xs;
-				func = $temp$func;
-				acc = $temp$acc;
-				list = $temp$list;
-				continue foldl;
-			}
-		}
-	});
-var elm$core$List$reverse = function (list) {
-	return A3(elm$core$List$foldl, elm$core$List$cons, _List_Nil, list);
-};
 var elm$core$Array$compressNodes = F2(
 	function (nodes, acc) {
 		compressNodes:
@@ -5170,7 +5255,6 @@ var elm$core$Basics$apL = F2(
 		return f(x);
 	});
 var elm$core$Basics$floor = _Basics_floor;
-var elm$core$Basics$gt = _Utils_gt;
 var elm$core$Basics$max = F2(
 	function (x, y) {
 		return (_Utils_cmp(x, y) > 0) ? x : y;
@@ -5518,61 +5602,6 @@ var elm$html$Html$Events$stopPropagationOn = F2(
 			event,
 			elm$virtual_dom$VirtualDom$MayStopPropagation(decoder));
 	});
-var elm$core$List$foldrHelper = F4(
-	function (fn, acc, ctr, ls) {
-		if (!ls.b) {
-			return acc;
-		} else {
-			var a = ls.a;
-			var r1 = ls.b;
-			if (!r1.b) {
-				return A2(fn, a, acc);
-			} else {
-				var b = r1.a;
-				var r2 = r1.b;
-				if (!r2.b) {
-					return A2(
-						fn,
-						a,
-						A2(fn, b, acc));
-				} else {
-					var c = r2.a;
-					var r3 = r2.b;
-					if (!r3.b) {
-						return A2(
-							fn,
-							a,
-							A2(
-								fn,
-								b,
-								A2(fn, c, acc)));
-					} else {
-						var d = r3.a;
-						var r4 = r3.b;
-						var res = (ctr > 500) ? A3(
-							elm$core$List$foldl,
-							fn,
-							acc,
-							elm$core$List$reverse(r4)) : A4(elm$core$List$foldrHelper, fn, acc, ctr + 1, r4);
-						return A2(
-							fn,
-							a,
-							A2(
-								fn,
-								b,
-								A2(
-									fn,
-									c,
-									A2(fn, d, res))));
-					}
-				}
-			}
-		}
-	});
-var elm$core$List$foldr = F3(
-	function (fn, acc, ls) {
-		return A4(elm$core$List$foldrHelper, fn, acc, 0, ls);
-	});
 var elm$json$Json$Decode$field = _Json_decodeField;
 var elm$json$Json$Decode$at = F2(
 	function (fields, decoder) {
@@ -5645,6 +5674,9 @@ var author$project$Main$viewHero = A2(
 		[
 			elm$html$Html$text('A Todo List Built In Elm')
 		]));
+var author$project$Main$DeleteTodoItem = function (a) {
+	return {$: 'DeleteTodoItem', a: a};
+};
 var elm$html$Html$li = _VirtualDom_node('li');
 var elm$html$Html$span = _VirtualDom_node('span');
 var author$project$Main$viewTodoItem = function (todo) {
@@ -5685,7 +5717,9 @@ var author$project$Main$viewTodoItem = function (todo) {
 						elm$html$Html$button,
 						_List_fromArray(
 							[
-								elm$html$Html$Attributes$class('todo-item-button')
+								elm$html$Html$Attributes$class('todo-item-button'),
+								elm$html$Html$Events$onClick(
+								author$project$Main$DeleteTodoItem(todo.id))
 							]),
 						_List_fromArray(
 							[
@@ -7985,7 +8019,6 @@ var elm$browser$Debugger$History$viewRecentSnapshots = F3(
 		var startingIndex = ((arrayLength * elm$browser$Debugger$History$maxSnapshotSize) - elm$browser$Debugger$History$maxSnapshotSize) - messagesToFill;
 		return A3(elm$browser$Debugger$History$viewAllSnapshots, selectedIndex, startingIndex, snapshotsToRender);
 	});
-var elm$core$Basics$neq = _Utils_notEqual;
 var elm$browser$Debugger$History$view = F2(
 	function (maybeIndex, _n0) {
 		var snapshots = _n0.snapshots;
@@ -10739,4 +10772,4 @@ var elm$browser$Browser$sandbox = function (impl) {
 var author$project$Main$main = elm$browser$Browser$sandbox(
 	{init: author$project$Main$initialModel, update: author$project$Main$update, view: author$project$Main$view});
 _Platform_export({'Main':{'init':author$project$Main$main(
-	elm$json$Json$Decode$succeed(_Utils_Tuple0))({"versions":{"elm":"0.19.0"},"types":{"message":"Main.Msg","aliases":{},"unions":{"Main.Msg":{"args":[],"tags":{"AddTodoItem":[],"UpdateTitle":["String.String"]}},"String.String":{"args":[],"tags":{"String":[]}}}}})}});}(this));
+	elm$json$Json$Decode$succeed(_Utils_Tuple0))({"versions":{"elm":"0.19.0"},"types":{"message":"Main.Msg","aliases":{},"unions":{"Main.Msg":{"args":[],"tags":{"AddTodoItem":[],"UpdateTitle":["String.String"],"DeleteTodoItem":["Basics.Int"]}},"Basics.Int":{"args":[],"tags":{"Int":[]}},"String.String":{"args":[],"tags":{"String":[]}}}}})}});}(this));

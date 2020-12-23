@@ -27,7 +27,7 @@ type alias Model =
 
 initialModel : Model
 initialModel =
-    { todos = [{ id = 1, title = "todo thing", completed = False}]
+    { todos = [ { id = 1, title = "todo thing", completed = False } ]
     , id = 0
     , title = ""
     }
@@ -41,6 +41,11 @@ newTodoItem title id =
     }
 
 
+deleteTodo : List Todo -> Int -> List Todo
+deleteTodo todos id =
+    List.filter (\x -> x.id /= id) todos
+
+
 
 -- UPDATE
 
@@ -48,6 +53,7 @@ newTodoItem title id =
 type Msg
     = AddTodoItem
     | UpdateTitle String
+    | DeleteTodoItem Int
 
 
 update : Msg -> Model -> Model
@@ -68,6 +74,9 @@ update msg model =
         UpdateTitle value ->
             { model | title = value }
 
+        DeleteTodoItem id ->
+            { model | todos = deleteTodo model.todos id }
+
 
 
 -- VIEW
@@ -86,17 +95,18 @@ viewHero : Html Msg
 viewHero =
     div [ class "hero" ] [ text "A Todo List Built In Elm" ]
 
+
 viewAddTodoInput : String -> Html Msg
 viewAddTodoInput title =
     div [ class "item-group" ]
-        [ div [ class "item-title" ] [ text "Add a todo item"]
+        [ div [ class "item-title" ] [ text "Add a todo item" ]
         , input
-          [ value title
-          , onInput UpdateTitle
-          , placeholder "Build more apps in Elm"
-          , class "item-input"
-          ]
-          []
+            [ value title
+            , onInput UpdateTitle
+            , placeholder "Build more apps in Elm"
+            , class "item-input"
+            ]
+            []
         , button [ onClick AddTodoItem, class "item-button" ] [ text "add item" ]
         ]
 
@@ -115,7 +125,6 @@ viewTodoList todos =
         [ div [ class "item-title" ] [ text "Things to do" ]
         , ul [ class "todo-item-group" ] todoList
         ]
-    
 
 
 viewTodoItem : Todo -> Html Msg
@@ -125,9 +134,12 @@ viewTodoItem todo =
             [ text todo.title ]
         , div []
             [ button [ class "todo-item-button" ]
-                [ text "edit"]
-            , button [ class "todo-item-button" ]
-                [ text "delete"]
+                [ text "edit" ]
+            , button
+                [ class "todo-item-button"
+                , onClick (DeleteTodoItem todo.id)
+                ]
+                [ text "delete" ]
             ]
         ]
 
