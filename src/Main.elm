@@ -28,7 +28,7 @@ type alias Model =
 
 initialModel : Model
 initialModel =
-    { todos = [ { id = 1, title = "todo thing", completed = False } ]
+    { todos = []
     , id = 0
     , title = ""
     }
@@ -61,11 +61,6 @@ completeTodoItem todos id =
 
 
 
--- (a -> b) -> List a -> List b
--- getTodoTitle :  : List Todo -> Int -> String
--- getTodoTitle todos id =
---     todos
---         |> List.filter (\x -> x.id == id)
 -- UPDATE
 
 
@@ -74,10 +69,6 @@ type Msg
     | UpdateTitle String
     | DeleteTodoItem Int
     | CompleteTodoItem Int
-
-
-
--- | EditTodoItem Int
 
 
 update : Msg -> Model -> Model
@@ -106,8 +97,6 @@ update msg model =
 
 
 
--- EditTodoItem id ->
---     { model | title = getTodoTitle model.todos id }
 -- VIEW
 
 
@@ -166,12 +155,6 @@ viewTodoItem todo =
             , div []
                 [ button
                     [ class "todo-item-button"
-
-                    -- , onClick (EditTodoItem todo.id)
-                    ]
-                    [ text "edit" ]
-                , button
-                    [ class "todo-item-button"
                     , onClick (DeleteTodoItem todo.id)
                     ]
                     [ text "delete" ]
@@ -199,6 +182,7 @@ viewCompletedTodoList todos =
         ]
 
 
+viewCompletedTodos : Todo -> Html Msg
 viewCompletedTodos todo =
     if todo.completed == True then
         li [ class "todo-item" ]
